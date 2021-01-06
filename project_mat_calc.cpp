@@ -11,7 +11,6 @@ for(int i = 0; i < m; i++){
 
 }
 
-
 void printMat(int m, int n, double ** mat)
 {
 
@@ -199,8 +198,205 @@ void multiplyMats(double ** mat1, double ** mat2, int m1, int n1, int m2, int n2
     }
 }
 
+void opositeMat(int m, int n, double ** mat)
+{
+    double ** mCopy = new double * [m];
+    for(int i = 0; i < m; i++)
+    {
+        mCopy[i] = new double [n];
+    }
+    for(int i = 0; i < m; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            mCopy[i][j] = mat[i][j];
+        }
+    }
+    double ** opMat = new double * [m];
+    for(int i = 0; i < m; i++)
+    {
+        opMat[i] = new double [n];
+    }
+    double ** trOpMat = new double * [m];
+    for(int i = 0; i < m; i++)
+    {
+        trOpMat[i] = new double [n];
+    }
+    if(m == n)
+    {
+        if(determinant(m, n, mat) != 0)
+        {
+            for(int i = 0; i < m; i++)
+            {
+                for(int j = 0; j < n; j++)
+                {
+                    if((i + j) % 2 == 0)
+                    {
+                        poddeterminantaUse(m, n, mCopy, i, j);
+                        opMat[i][j] = determinant(m - 1, n - 1, mCopy);
+                        for(int k = 0; k < m; k++)
+                        {
+                            for (int l = 0; l < n; l++)
+                            {
+                                mCopy[k][l] = mat[k][l];
+                            }
+                        }
+                    }
+                    else
+                    {
+                        poddeterminantaUse(m, n, mCopy, i, j);
+                        opMat[i][j] = -(determinant(m - 1, n - 1, mCopy));
+                        for(int k = 0; k < m; k++)
+                        {
+                            for (int l = 0; l < n; l++)
+                            {
+                                mCopy[k][l] = mat[k][l];
+                            }
+                        }
+                    }
+                }
+            }
+            for(int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    trOpMat[i][j] = opMat[j][i];
+                    trOpMat[i][j] /= determinant(m, n, mat);
+                }
+            }
+            cout << "The opposite matrix is: " << endl;
+            printMat(m, n, trOpMat);
+        }
+        else cout << "the determinant is 0. Matrix opposite to to the current one doest not exist!" << endl;
+    }
+    else cout << "the dimensions of the matrix should be equal" << endl;
+}
+
+char endMesseges()
+{
+    cout << "press B to turn back to the MENU" << endl;
+    cout << "press F to finish with the operations" << endl;
+    char backToMenu;
+    cin >> backToMenu;
+    while(backToMenu != 'F' && backToMenu!= 'B')
+    {
+        cout << "Please enter a valid letter." << endl;
+        cin >> backToMenu;
+    }
+    if(backToMenu == 'B')
+    {
+        return 'B';
+    }
+    if(backToMenu == 'F')
+    {
+        return 'F';
+    }
+}
+
+
+
+
 int main ()
 {
+    while(true)
+    {
+        cout << "Type the number of the operation you want to use: " << endl;
+
+        char choice [1] = {};
+        cin >> choice[0];
+        int m1, n1, m2, n2 = 0;
+        cout << "Set the two dimensions of the matrix" << endl;
+        if(choice[0] == '1') cout << "(First matrix)" << endl;
+        cin >> m1 >> n1;
+        if(choice[0] == '5' || choice[0] == '6'){
+            while(m1 != n1){
+            cout << "The dimensions of the matrix should be equal" << endl;
+            cout << "Set the two dimensions of the matrix" << endl;
+            cin >> m1 >> n1;
+            }
+        }
+        double** myMat1 = new double* [m1];
+        for(int i = 0; i < m1; i++)
+        {
+            myMat1[i] = new double[n1];
+        }
+        cout << "Now initialize the matrix" << endl;
+        initializeMat(m1, n1, myMat1);
+
+        if(choice[0] == '1'){
+            cout << "Set the two dimensions for the matrix" << endl;
+            cout << "(Second one)" << endl;
+            cin >> m2 >> n2;
+            while(m2 != n1){
+                 cout << "the second dimension of the first matrix and the first dimension of the second matrix should be equal" << endl;
+                 cout << "Set the two dimensions for the matrix" << endl;
+                 cout << "(Second matrix)" << endl;
+                 cin >> m2 >> n2;
+            }
+            cout << "Now initialize the matrix" << endl;
+            double** myMat2 = new double* [m2];
+            for(int i = 0; i < m2; i++)
+            {
+            myMat2[i] = new double[n2];
+            }
+            initializeMat(m2, n2, myMat2);
+            cout << "The answer is: " << endl;
+            multiplyMats(myMat1, myMat2, m1, n1, m2, n2);
+            if(endMesseges() == 'F')
+            {
+                break;
+            }
+        }
+
+        if(choice[0] == '2')
+        {
+            int scalar = 0;
+            cout << "Set a scalar you want to multiply your matrix with." << endl;
+            cin >> scalar;
+            cout << "The result matrix is: " << endl;
+            scalMultiply(m1, n1, scalar, myMat1);
+            if(endMesseges() == 'F')
+            {
+                break;
+            }
+
+        }
+        if(choice[0] == '3')
+        {
+            int scalar = 0;
+            cout << "Set a scalar you want to divide your matrix with." << endl;
+            cin >> scalar;
+            cout << "The result matrix is: " << endl;
+            scalDivide(m1, n1, scalar, myMat1);
+            if(endMesseges() == 'F')
+            {
+                break;
+            }
+        }
+        if(choice[0] == '4'){
+            cout << "The transposed matrix is: " << endl;
+            transp(m1, n1, myMat1);
+            if(endMesseges() == 'F')
+            {
+                break;
+            }
+        }
+        if(choice[0] == '5'){
+            cout << "The determinant of the matrix is: " << endl;
+            cout << determinant(m1, n1, myMat1) << endl;
+             if(endMesseges() == 'F')
+            {
+                break;
+            }
+        }
+        if(choice[0] == '6'){
+            opositeMat(m1, n1, myMat1);
+            if(endMesseges() == 'F')
+            {
+                break;
+            }
+        }
+    }
 
     return 0;
 }
