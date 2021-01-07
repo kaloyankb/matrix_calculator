@@ -1,0 +1,8 @@
+Hello! This is the matrix calculator! These are the operations you can use with this calculator:
+
+1. Multiply two matrices
+2. Multiply a matrix with a given scalar
+3. Divide a matrix with a given scalar
+4. Find the transposed matrix
+5. Find the determinant of a matrix (works only for 4x4 matrix)
+6. Find the opposite matrix of a given matrix (works only for 4x4 matrix)
